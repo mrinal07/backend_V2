@@ -42,7 +42,7 @@ router.get("/get-portfolio-data", async (req, res) => {
 
     const intros = await introCollection.find().toArray();
     const abouts = await aboutCollection.find().toArray();
-    const projects = await projectCollection.find().toArray();
+    projects = await projectCollection.find().toArray();
     const contacts = await contactCollection.find().toArray();
     const experiences = await experienceCollection.find().toArray();
     const courses = await courseCollection.find().toArray();
@@ -226,6 +226,7 @@ router.post("/add-experience", async (req, res) => {
       title: req.body.title,
       period: req.body.period,
       company: req.body.company,
+      skills: req.body.skills,
       description: req.body.description,
     };
 
@@ -273,6 +274,7 @@ router.post("/update-experience", async (req, res) => {
         title: req.body.title,
         period: req.body.period,
         company: req.body.company,
+        skills: req.body.skills,
         description: req.body.description,
       },
     };
@@ -614,7 +616,6 @@ router.post("/contact-us", async (req, res) => {
     const result = await collection.insertOne(addQuery);
 
     if (result.acknowledged) {
-      
       res.status(200).send({
         data: result,
         success: true,
@@ -626,12 +627,70 @@ router.post("/contact-us", async (req, res) => {
     } else {
       console.log("Document insertion failed.");
     }
-
-    
   } catch (error) {
     res.status(500).send(error);
   } finally {
     await client.close();
+  }
+});
+
+// -------------------------------------------------------------------------------------------------------------------
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const { log } = require("console");
+
+let baseDir = path.join(__dirname, "../resources/");
+console.log(baseDir);
+
+if (!fs.existsSync(baseDir)) {
+  fs.mkdirSync(baseDir, { recursive: true });
+}
+
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, baseDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+
+router.post("/upload", upload.single("pdf"), (req, res) => {
+
+  console.log(req.body);
+  try {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+
+    res.status(200).json({
+      message: "File uploaded successfully",
+      file: req.file,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Endpoint to serve the PDF file
+router.get('/download/:filename', (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(baseDir, filename);
+  console.log(filePath);
+ 
+  // Check if the file exists
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, filename, (err) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+  } else {
+    res.status(404).json({ error: 'File not found' });
   }
 });
 
