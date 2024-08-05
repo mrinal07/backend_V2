@@ -1,13 +1,5 @@
 const router = require("express").Router();
 
-const {
-  Intro,
-  About,
-  Project,
-  Contact,
-  Experience,
-  Course,
-} = require("../models/portfolioModel");
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = process.env.mongo_url;
@@ -693,5 +685,9 @@ router.get('/download/:filename', (req, res) => {
     res.status(404).json({ error: 'File not found' });
   }
 });
+
+
+
+
 
 module.exports = router;

@@ -9,13 +9,15 @@ const cors = require("cors");
 app.use(cors());
 // CORS added for Deployement purpose
 
-const dbConfig = require("./config/dbConfig");
-
 
 
 const portfolioRoute = require("./routes/portfolioRoute");
 app.use(express.json());
+
 app.use("/api/portfolio", portfolioRoute);
+
+const redirectURL = require("./controllers/route.js")
+app.use("/",redirectURL)
 
 const port = process.env.PORT
 
