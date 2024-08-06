@@ -40,15 +40,15 @@ router.post("/add-url", async (req, res) => {
       client = connectDB;
 
       const urlPattern = /^(https:\/\/|.*:\/\/www\.)/i;
-      flag = urlPattern.test(urlName)
+      flag = urlPattern.test(urlName);
 
-      originalURL =  (flag)? urlName: "https://" + urlName
+      originalURL = flag ? urlName : "https://" + urlName;
       console.log(originalURL);
 
       await client.connect();
       const addURL = {
         shortId: uniqueNumber,
-        shortUrl: "https://devmrinal.in/"+uniqueNumber,
+        shortUrl: "https://devmrinal.in/m/" + uniqueNumber,
         originalUrl: originalURL,
         numberOfClick: 0,
       };
@@ -75,7 +75,7 @@ router.post("/add-url", async (req, res) => {
         console.log("result", result);
 
         res.status(200).send({
-          data: "https://devmrinal.in/" + uniqueNumber,
+          data: "https://devmrinal.in/m/" + uniqueNumber,
           success: true,
           message: "URL Updated Successfully",
         });
@@ -83,7 +83,7 @@ router.post("/add-url", async (req, res) => {
         const result = await collection.insertOne(addURL);
         console.log("result.originalUrl", result.originalUrl);
         res.status(200).send({
-          data: "https://devmrinal.in/" + uniqueNumber,
+          data: "https://devmrinal.in/m/" + uniqueNumber,
           success: true,
           message: "URL Added Successfully",
         });
@@ -99,17 +99,17 @@ router.post("/add-url", async (req, res) => {
 });
 
 // short url redirect by unique id
-router.get("/:data", async (req, res) => {
+router.get("/m/:data", async (req, res) => {
   try {
     // console.log(req.url);
     const parsedUrl = url.parse(req.url, true);
     // console.log(parsedUrl);
     const path = parsedUrl.pathname;
     console.log(path);
-    
-    // Id = String(path.split("/")).replace(",", "");
-    Id = String(path.replace("/",""))
-    // console.log("ShortId=> " + Id);    
+
+    Id = String(path.split("/m/")).replace(",", "");
+    // Id = String(path.replace("/", ""));
+    console.log("ShortId=> " + Id);
 
     client = connectDB;
 
