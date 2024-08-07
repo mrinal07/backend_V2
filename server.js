@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const path = require('path'); // Import the path module
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.use(cors());
 
 app.use(express.json());
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'frontend/build')));
 
 
 const portfolioRoute = require("./routes/portfolioRoute");
@@ -22,7 +23,7 @@ const redirectURL = require("./controllers/route.js")
 app.use("/",redirectURL)
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build/index.html'));
+  res.sendFile(path.join(__dirname, 'frontend/build/index.html'));
 });
 
 const port = process.env.PORT
