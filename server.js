@@ -28,9 +28,10 @@ app.get('/manifest.json', (req, res) => {
 });
 
 // Catch-all route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend_V2/build/index.html'));
-});
+console.log("Mrinal checking __dirname=> "+__dirname);
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'frontend_V2/build/index.html'));
+// });
 
 const port = process.env.PORT
 
