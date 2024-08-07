@@ -12,7 +12,7 @@ app.use(cors());
 
 app.use(express.json());
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'frontend/build')));
+app.use(express.static(path.join(__dirname, 'frontend_V2/build')));
 
 
 const portfolioRoute = require("./routes/portfolioRoute");
@@ -22,8 +22,14 @@ app.use("/api/portfolio", portfolioRoute);
 const redirectURL = require("./controllers/route.js")
 app.use("/",redirectURL)
 
+// Serve the manifest.json file correctly
+app.get('/manifest.json', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/build/manifest.json'));
+});
+
+// Catch-all route
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build/index.html'));
+  res.sendFile(path.join(__dirname, 'frontend_V2/build/index.html'));
 });
 
 const port = process.env.PORT
