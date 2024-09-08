@@ -16,7 +16,7 @@ function mongoStableApi() {
   return client;
 }
 
-// Get All Portfolio Data
+// Get All Portfolio Data PART-I
 router.get("/get-portfolio-data", async (req, res) => {
   try {
     client = mongoStableApi();
@@ -27,25 +27,73 @@ router.get("/get-portfolio-data", async (req, res) => {
 
     const introCollection = await database.collection("intros");
     const aboutCollection = await database.collection("abouts");
-    const projectCollection = await database.collection("projects");
     const contactCollection = await database.collection("contacts");
-    const experienceCollection = await database.collection("experiences");
-    const courseCollection = await database.collection("courses");
+
+    // const projectCollection = await database.collection("projects");
+    // const experienceCollection = await database.collection("experiences");
+
+    // ON HOLD
+    // const courseCollection = await database.collection("courses");
 
     const intros = await introCollection.find().toArray();
     const abouts = await aboutCollection.find().toArray();
-    projects = await projectCollection.find().toArray();
     const contacts = await contactCollection.find().toArray();
-    const experiences = await experienceCollection.find().toArray();
-    const courses = await courseCollection.find().toArray();
+
+    // projects = await projectCollection.find().toArray();
+    // const experiences = await experienceCollection.find().toArray();
+    // const courses = await courseCollection.find().toArray();
 
     res.status(200).send({
       intro: intros,
       about: abouts,
-      projects: projects,
       contact: contacts[0],
+      // projects: projects,
+      // experiences: experiences,
+      // courses: courses,
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+});
+
+// Get All Portfolio Data PART-II
+router.get("/get-next-portfolio-data", async (req, res) => {
+  try {
+    client = mongoStableApi();
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+
+    const database = await client.db("mern-portfolio");
+
+    // const introCollection = await database.collection("intros");
+    // const aboutCollection = await database.collection("abouts");
+    // const contactCollection = await database.collection("contacts");
+
+    const projectCollection = await database.collection("projects");
+    const experienceCollection = await database.collection("experiences");
+
+    // ON HOLD
+    // const courseCollection = await database.collection("courses");
+
+    // const intros = await introCollection.find().toArray();
+    // const abouts = await aboutCollection.find().toArray();
+    // const contacts = await contactCollection.find().toArray();
+
+    projects = await projectCollection.find().toArray();
+    const experiences = await experienceCollection.find().toArray();
+
+    // const courses = await courseCollection.find().toArray();
+
+    res.status(200).send({
+      // intro: intros,
+      // about: abouts,
+      // contact: contacts[0],
+      projects: projects,
       experiences: experiences,
-      courses: courses,
+      // courses: courses,
     });
   } catch (error) {
     res.status(500).send(error);
