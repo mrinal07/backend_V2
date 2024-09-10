@@ -1,0 +1,5 @@
+runtime: nodejs16
+instance_class: F2  # Optional, selects a pricing tier (F1 is free)
+env: flex
+manual_scaling:
+  instances: 1
